@@ -5,8 +5,22 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+# class UserGame(Base):
+#     __tablename__ = "user_games"
+
+#     id = Column(Integer(), primary_key=True)
+#     game_id = Column(ForeignKey('games.id'))
+#     user_id = Column(ForeignKey('users.id'))
+
+#     game = relationship('Game', back_populates='game_users')
+#     user = relationship('User', back_populates='game_users')
+
+#     def __repr__(self):
+#         return f'UserGame(game_id={self.game_id}, ' + \
+#             f'user_id={self.user_id})'
+
 owned_game = Table(
-    'owned_game',
+    'owned_games',
     Base.metadata,
     Column('game_id', ForeignKey('games.id'), primary_key=True),
     Column('user_id', ForeignKey('users.id'), primary_key=True),
@@ -47,3 +61,5 @@ class Game(Base):
         return f'Game(id={self.id}, ' + \
             f'title="{self.title}", ' + \
             f'platform="{self.platform})"'
+    
+
