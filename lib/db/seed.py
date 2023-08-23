@@ -28,7 +28,7 @@ print("Seeding games and users...")
 
 games = [
     Game(
-        title=fake.unique.name(),
+        title=f'{fake.unique.word()} {fake.unique.word()}',
         genre=random.choice(genre),
         platform=random.choice(platform),
         price=random.randint(0, 60)

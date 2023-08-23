@@ -47,7 +47,7 @@ class User(Base):
             f'username="{self.username}", ' + \
             f'email="{self.email}", ' + \
             f'user_since="{self.created_at}", ' + \
-            f'region="{self.region})"'
+            f'region="{self.region}")'
     
     def games_by_title(self):
         return [game.title for game in session.query(User).filter(User.id==self.id).first().games]
@@ -62,13 +62,15 @@ class User(Base):
         return [game.genre for game in session.query(User).filter(User.id==self.id).first().games]
 
     @classmethod
-    def find_user(cls, name):
-        user_list = session.query(User).filter(User.username.like(f'%{name}%')).all()
+    def find_user(cls, username):
+        user_list = session.query(User).filter(User.username.like(f'%{username}%')).all()
 
         if user_list:
-            print(f"The following users match that name: \n {[user.username for user in user_list]}")
+            print("The following users match that username:")
+            for user in user_list:
+                print(user)
         else:
-            print("There are no users that match that name.")  
+            print("There are no users that match that username.")  
 
     @classmethod
     def by_email(cls, word):
@@ -88,6 +90,15 @@ class User(Base):
         else:
             print("There are no users that match that region.")
 
+    @classmethod
+    def get_all(cls):
+        return session.query(User).all()
+    
+    @classmethod
+    def print_all(cls):
+        for user in session.query(User).all():
+            print(user)
+
 class Game(Base):
     __tablename__ = 'games'
 
@@ -103,7 +114,8 @@ class Game(Base):
     def __repr__(self):
         return f'Game(id={self.id}, ' + \
             f'title="{self.title}", ' + \
-            f'platform="{self.platform})"'    
+            f'title="{self.platform}", ' + \
+            f'platform="{self.price}")'    
     
     def users_by_username(self):
         return [user.username for user in session.query(Game).filter(Game.id==self.id).first().users]
@@ -114,9 +126,10 @@ class Game(Base):
     @classmethod
     def find_title(cls, title):
         game_list = session.query(Game).filter(Game.title.like(f'%{title}%')).all()
-
         if game_list:
-            print(f"The following games match that title: \n {[game.title for game in game_list]}")
+            print("The following games match that title:")
+            for game in game_list:
+                print(game)
         else:
             print("There are no games that match that title.")
     
@@ -131,7 +144,7 @@ class Game(Base):
     
     @classmethod
     def by_platform(cls, platform):
-        game_list = session.query(Game).filter(Game.platform == platform).all()
+        game_list = session.query(Game).filter(Game.platform.like(f'%{platform}%')).all()
 
         if game_list:
             print(f"The following games match that platform: \n {[game.title for game in game_list]}")
@@ -140,10 +153,19 @@ class Game(Base):
     
     @classmethod
     def by_genre(cls, genre):
-        game_list = session.query(Game).filter(Game.genre == genre).all()
+        game_list = session.query(Game).filter(Game.genre.like(f'%{genre}%')).all()
 
         if game_list:
             print(f"The following games match that genre: \n {[game.title for game in game_list]}")
         else:
             print("There are no games that match that genre.")
+
+    @classmethod
+    def get_all(cls):
+        return session.query(Game).all()
+    
+    classmethod
+    def print_all(cls):
+        for game in session.query(Game).all():
+            print(game)
     
