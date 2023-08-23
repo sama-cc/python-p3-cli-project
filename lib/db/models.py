@@ -59,7 +59,34 @@ class User(Base):
         return [game.platform for game in session.query(User).filter(User.id==self.id).first().games]
     
     def games_by_genre(self):
-        return [game.genre for game in session.query(User).filter(User.id==self.id).first().games]  
+        return [game.genre for game in session.query(User).filter(User.id==self.id).first().games]
+
+    @classmethod
+    def find_user(cls, name):
+        user_list = session.query(User).filter(User.username.like(f'%{name}%')).all()
+
+        if user_list:
+            print(f"The following users match that name: \n {[user.username for user in user_list]}")
+        else:
+            print("There are no users that match that name.")  
+
+    @classmethod
+    def by_email(cls, word):
+        user_list = session.query(User).filter(User.email.like(f'%{word}%')).all()
+
+        if user_list:
+            print(f"The following users match that email: \n {[(user.username, user.email) for user in user_list]}")
+        else:
+            print("There are no users that match that email.")
+
+    @classmethod
+    def by_region(cls, region):
+        user_list = session.query(User).filter(User.region == region).all()
+
+        if user_list:
+            print(f"The following users match that region: \n {[user.username for user in user_list]}")
+        else:
+            print("There are no users that match that region.")
 
 class Game(Base):
     __tablename__ = 'games'
@@ -83,4 +110,40 @@ class Game(Base):
     
     def users_by_region(self):
         return [user.region for user in session.query(Game).filter(Game.id==self.id).first().users]  
+    
+    @classmethod
+    def find_title(cls, title):
+        game_list = session.query(Game).filter(Game.title.like(f'%{title}%')).all()
+
+        if game_list:
+            print(f"The following games match that title: \n {[game.title for game in game_list]}")
+        else:
+            print("There are no games that match that title.")
+    
+    @classmethod
+    def by_price(cls, price):
+        game_list = session.query(Game).filter(Game.price == price).all()
+
+        if game_list:
+            print(f"The following games match that price: \n {[game.title for game in game_list]}")
+        else:
+            print("There are no games that match that price.")
+    
+    @classmethod
+    def by_platform(cls, platform):
+        game_list = session.query(Game).filter(Game.platform == platform).all()
+
+        if game_list:
+            print(f"The following games match that platform: \n {[game.title for game in game_list]}")
+        else:
+            print("There are no games that match that platform.")
+    
+    @classmethod
+    def by_genre(cls, genre):
+        game_list = session.query(Game).filter(Game.genre == genre).all()
+
+        if game_list:
+            print(f"The following games match that genre: \n {[game.title for game in game_list]}")
+        else:
+            print("There are no games that match that genre.")
     
