@@ -19,6 +19,7 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 from models import Base
 target_metadata = Base.metadata
+render_as_batch=True
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
