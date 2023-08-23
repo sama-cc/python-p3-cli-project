@@ -1,9 +1,13 @@
 from sqlalchemy import func
-from sqlalchemy import Column, Integer, String, DateTime, Table, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, DateTime, Table, ForeignKey, create_engine
+from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+
+engine = create_engine('sqlite:///db/user_game.db')
+Session = sessionmaker(bind=engine)
+session = Session()
 
 # class UserGame(Base):
 #     __tablename__ = "user_games"
@@ -44,6 +48,18 @@ class User(Base):
             f'email="{self.email}", ' + \
             f'user_since="{self.created_at}", ' + \
             f'region="{self.region})"'
+    
+    def games_by_title(self):
+        return [game.title for game in session.query(User).filter(User.id==self.id).first().games]
+    
+    def games_by_price(self):
+        return [game.price for game in session.query(User).filter(User.id==self.id).first().games]
+    
+    def games_by_platform(self):
+        return [game.platform for game in session.query(User).filter(User.id==self.id).first().games]
+    
+    def games_by_genre(self):
+        return [game.genre for game in session.query(User).filter(User.id==self.id).first().games]  
 
 class Game(Base):
     __tablename__ = 'games'
@@ -60,6 +76,11 @@ class Game(Base):
     def __repr__(self):
         return f'Game(id={self.id}, ' + \
             f'title="{self.title}", ' + \
-            f'platform="{self.platform})"'
+            f'platform="{self.platform})"'    
     
-
+    def users_by_username(self):
+        return [user.username for user in session.query(Game).filter(Game.id==self.id).first().users]
+    
+    def users_by_region(self):
+        return [user.region for user in session.query(Game).filter(Game.id==self.id).first().users]  
+    
