@@ -39,7 +39,8 @@ users = [
     User(
         username=fake.unique.name(),
         email=f"{fake.word()}@{fake.word()}.com",
-        region=random.choice(region)        
+        region=random.choice(region),
+        password=fake.word()        
     )
 for i in range(50)]
 
