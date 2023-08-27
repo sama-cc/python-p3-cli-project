@@ -20,9 +20,9 @@ session.query(User).delete()
 session.query(owned_game).delete()
 session.commit()
 
-region = ("US", "EU", "JP")
-platform = ("Switch", "PC", "Xbox", "Playstaion")
-genre = ("FPS", "RPG", "Adventure", "Strategy", "MOBA")
+region = ["US", "EU", "JP"]
+platform = ["Switch", "PC", "Xbox", "Playstaion"]
+genre = ["FPS", "RPG", "Adventure", "Strategy", "MOBA"]
 
 print("Seeding games and users...")
 
