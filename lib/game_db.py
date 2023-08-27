@@ -16,25 +16,50 @@ cli.command()
 click.option('--user')
 @click.pass_context
 def search(ctx, user):
-    choice = click.prompt('\nHow would you like to search? \n Type "title" to search by title. \n Type "platform" to search by platform. \n Type "genre" to search by genre. \n Type "price" to search by price. \n Type "help" to view a full list of commands. \n Type "back" if you want to return to the previous menu. \n Type "exit" to exit the application.\n')
+    choice = click.prompt('\nHow would you like to search? \n Type "title" to search by title. \n Type "platform" to search by platform. \n Type "genre" to search by genre. \n Type "price" to search by price. \n Type "back" if you want to return to the previous menu. \n Type "exit" to exit the application.\n')
 
     if choice == "title":
         qtitle = click.prompt("Query")
-        click.echo(f"\n {[game for game in user.games if qtitle in game.title]}")
-        ctx.invoke(search, user=user)
+        result = [game for game in user.games if qtitle in game.title]
+        
+        if result:
+            click.echo(f"\n {result}")
+            ctx.invoke(search, user=user)
+        else:
+            click.echo("No match found.")
+            ctx.invoke(search, user=user)
     elif choice == "platform":
-        click.echo(f"\n {user} \n")
-        ctx.invoke(main, user=user)
+        qplat = click.prompt("Please choose from the following platforms: \n PC, Switch, Xbox, Playstation. \nQuery")
+        result = [game for game in user.games if qplat in game.platform]
+
+        if result:
+            click.echo(f" {result}")
+            ctx.invoke(search, user=user)
+        else:
+            click.echo("No match found.")
+            ctx.invoke(search, user=user)  
     elif choice == "genre":
-        click.echo(f"\n {user} \n")
-        ctx.invoke(main, user=user)
+        qgenre = click.prompt("Please choose from the following genres: \n FPS, RPG, Adventure, Strategy, MOBA. \nQuery")
+        result = [game for game in user.games if qgenre in game.genre]
+
+        if result:
+            click.echo(f"{result}")
+            ctx.invoke(search, user=user)
+        else:
+            click.echo("No match found.")
+            ctx.invoke(search, user=user)
     elif choice == "price":
-        click.echo(f"\n {user} \n")
-        ctx.invoke(main, user=user)
+        qprice = click.prompt("Please input price as an integer. \nQuery")
+        result = [game for game in user.games if int(qprice) == game.price]
+
+        if result:
+            click.echo(f"{result}")
+            ctx.invoke(search, user=user)
+        else:
+            click.echo("No match found.")
+            ctx.invoke(search, user=user)
     elif choice == "back" or "..":
         ctx.invoke(main, user=user)
-    elif choice == "help":
-        click.echo("help")
     elif choice == "exit":
         click.echo("\n See you next time. \n")
         exit()
@@ -47,7 +72,7 @@ click.option('--user')
 @click.pass_context
 def main(ctx, user):
     
-    choice = click.prompt('\nWhat would you like to do? \n Type "games" to view your library. \n Type "search" if you want to search your library. \n Type "info" if you want to view your info. \n Type "help" to view a full list of commands. \n Type "exit" to exit the application\n')
+    choice = click.prompt('\nWhat would you like to do? \n Type "games" to view your library. \n Type "search" if you want to search your library. \n Type "info" if you want to view your info. \n Type "exit" to exit the application\n')
 
     if choice == "games":
         click.echo(f"\n {[user.games]} \n")
@@ -57,8 +82,6 @@ def main(ctx, user):
         ctx.invoke(main, user=user)
     elif choice == "search":
         ctx.invoke(search, user=user)
-    elif choice == "help":
-        click.echo("help")
     elif choice == "exit":
         click.echo("\n See you next time. \n")
         exit()
