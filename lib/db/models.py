@@ -39,8 +39,8 @@ class User(Base):
     def __repr__(self):
         return f'Username: "{self.username}", ' + \
             f'Email: "{self.email}", ' + \
-            f'Joined: "{self.created_at}", ' + \
-            f'Region: "{self.region}")'
+            f'Region: "{self.region}", ' + \
+            f'Joined: "{self.created_at}"'
     
     def games_by_title(self):
         return [game.title for game in session.query(User).filter(User.id==self.id).first().games]
@@ -114,7 +114,7 @@ class Game(Base):
         return f'Title: "{self.title}", ' + \
             f'Genre: "{self.genre}", ' + \
             f'Platform: "{self.platform}", ' + \
-            f'Price: "{self.price}")'
+            f'Price: "{self.price}"'
     
     def users_by_username(self):
         return [user.username for user in session.query(Game).filter(Game.id==self.id).first().users]

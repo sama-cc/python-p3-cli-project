@@ -16,14 +16,14 @@ genre = ["FPS", "RPG", "Adventure", "Strategy", "MOBA"]
 
 cli=click.Group()
 
-cli.command()
-click.option('--user')
+@cli.command()
+@click.option('--user')
 @click.pass_context
 def account(ctx, user):
     change = click.prompt(f'\nBelow is your account info.\n\n{user}\n\n Type "back" to go back to the previous menu.\n Type "username" to change username.\n Type "email" to change email address.\n Type "region" to change region.\n')
 
     if change.lower() == "username":
-        p_user = click.prompt(f'\nPlease type your desired username or type "cancel" to cancel change request.\nCurrent username: {user.username}\nNew username\n')
+        p_user = click.prompt(f'\nPlease type your desired username or type "cancel" to cancel change request.\n\nCurrent username: {user.username}\nNew username\n')
         e_user = session.query(User).filter(User.username == p_user).first()
 
         if p_user.lower() == "cancel":
@@ -31,7 +31,7 @@ def account(ctx, user):
             ctx.invoke(account, user=user) 
         while e_user:
             click.echo(f"\n{p_user} is already taken. Please try again. ")
-            p_user = click.prompt(f'\nPlease type your desired username.\nCurrent username: {user.username}\nNew username\n')
+            p_user = click.prompt(f'\nPlease type your desired username.\n\nCurrent username: {user.username}\nNew username\n')
             e_user = session.query(User).filter(User.username == p_user).first()
         
         confirm = click.prompt(f'\nChange username to {p_user}? y/n?\n')
@@ -129,7 +129,7 @@ def account(ctx, user):
     elif change.lower() == "back":
         ctx.invoke(main, user=user)
     else:
-        click.echo("Input is invalid.")
+        click.echo("\nInput is invalid.")
         ctx.invoke(main, user=user)
 
     
@@ -137,8 +137,8 @@ def account(ctx, user):
         
 
 
-cli.command()
-click.option('--uname')
+@cli.command()
+@click.option('--uname')
 @click.pass_context
 def register(ctx, uname):
     set_uname = click.prompt(f'\nWould you like to register as {uname}? y/n? Type "cancel" to cancel')
@@ -227,8 +227,8 @@ def register(ctx, uname):
         ctx.invoke(register, uname=uname)
 
 
-cli.command()
-click.option('--user')
+@cli.command()
+@click.option('--user')
 @click.pass_context
 def search(ctx, user):
     choice = click.prompt('\nHow would you like to search? \n Type "title" to search by title. \n Type "platform" to search by platform. \n Type "genre" to search by genre. \n Type "price" to search by price. \n Type "back" to return to the previous menu. \n')
@@ -283,16 +283,18 @@ def search(ctx, user):
         click.echo("\nInput is not a valid option. Please try again.")
         ctx.invoke(main, user=user)
 
-cli.command()
-click.option('--user')
+@cli.command()
+@click.option('--user')
 @click.pass_context
 def main(ctx, user):
     """Main Menu"""
 
-    choice = click.prompt('\nWhat would you like to do? \n Type "games" to view your library. \n Type "search" if you want to search your library. \n Type "info" if you want to view or edit your info. \n Type "exit" to exit the application\n')
+    choice = click.prompt('\nWhat would you like to do? \n Type "games" to view your library. \n Type "search" to search your library. \n Type "info" to view or edit your account info. \n Type "exit" to exit the application.\n')
 
     if choice.lower() == "games":
-        click.echo(f"\n {[user.games]} \n")
+        click.echo("\nBelow is a full list of your owned games.")
+        for game in user.games:
+            click.echo(f"\n{game}")
         ctx.invoke(main, user=user)
     elif choice.lower() == "info":
         ctx.invoke(account, user=user)              
@@ -302,7 +304,7 @@ def main(ctx, user):
         click.echo("\n See you next time. \n")
         exit()
     else:
-        click.echo("Input is not a valid option. Please try again")
+        click.echo("\nInput is not a valid option. Please try again")
         ctx.invoke(main, user=user)
     
 
