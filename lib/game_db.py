@@ -14,17 +14,57 @@ cli=click.Group()
 
 cli.command()
 click.option('--user')
-def main(user):
-    choice = click.prompt('What would you like to do? Type "games" to view your library. Type "info" if you want to view your info. "--help" will give you a full list of commands.')
+@click.pass_context
+def search(ctx, user):
+    choice = click.prompt('\nHow would you like to search? \n Type "title" to search by title. \n Type "platform" to search by platform. \n Type "genre" to search by genre. \n Type "price" to search by price. \n Type "help" to view a full list of commands. \n Type "back" if you want to return to the previous menu. \n Type "exit" to exit the application.\n')
 
-    if choice == "games":
-        click.echo(user.games)
-    elif choice == "info":
-        click.echo(user)
+    if choice == "title":
+        qtitle = click.prompt("Query")
+        click.echo(f"\n {[game for game in user.games if qtitle in game.title]}")
+        ctx.invoke(search, user=user)
+    elif choice == "platform":
+        click.echo(f"\n {user} \n")
+        ctx.invoke(main, user=user)
+    elif choice == "genre":
+        click.echo(f"\n {user} \n")
+        ctx.invoke(main, user=user)
+    elif choice == "price":
+        click.echo(f"\n {user} \n")
+        ctx.invoke(main, user=user)
+    elif choice == "back" or "..":
+        ctx.invoke(main, user=user)
     elif choice == "help":
-        click.echo("get help")
+        click.echo("help")
+    elif choice == "exit":
+        click.echo("\n See you next time. \n")
+        exit()
     else:
         click.echo("Input is not a valid option. Try 'help' for more options.")
+        ctx.invoke(main, user=user)
+
+cli.command()
+click.option('--user')
+@click.pass_context
+def main(ctx, user):
+    
+    choice = click.prompt('\nWhat would you like to do? \n Type "games" to view your library. \n Type "search" if you want to search your library. \n Type "info" if you want to view your info. \n Type "help" to view a full list of commands. \n Type "exit" to exit the application\n')
+
+    if choice == "games":
+        click.echo(f"\n {[user.games]} \n")
+        ctx.invoke(main, user=user)
+    elif choice == "info":
+        click.echo(f"\n {user} \n")
+        ctx.invoke(main, user=user)
+    elif choice == "search":
+        ctx.invoke(search, user=user)
+    elif choice == "help":
+        click.echo("help")
+    elif choice == "exit":
+        click.echo("\n See you next time. \n")
+        exit()
+    else:
+        click.echo("Input is not a valid option. Try 'help' for more options.")
+        ctx.invoke(main, user=user)
     
 
 
