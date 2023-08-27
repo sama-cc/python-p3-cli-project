@@ -21,7 +21,7 @@ click.option('--uname')
 @click.pass_context
 def register(ctx, uname):
     set_uname = click.prompt(f'\nWould you like to register as {uname}? y/n? Type "cancel" to cancel')
-    if set_uname.lower() == "y" or "yes":
+    if set_uname.lower() == "y" or set_uname.lower() == "yes":
         p_email = click.prompt(f'\nPlease add your email address or hit "enter" to add it later.\n', default="")
         if p_email:
             while ("@" and "." not in p_email) or (p_email == True):
@@ -56,9 +56,9 @@ def register(ctx, uname):
         else:
             ctx.invoke(register, uname=uname)        
 
-    elif set_uname == "cancel":
+    elif set_uname.lower() == "cancel":
         login()
-    elif set_uname.lower() == "n" or "no":
+    elif set_uname.lower() == "n" or set_uname.lower() == "no":
         p_user = click.prompt(f'\nPlease type your desired username.\n')
         e_user = session.query(User).filter(User.username == p_user).first()
 
@@ -71,15 +71,15 @@ def register(ctx, uname):
         p_email = click.prompt(f'\nPlease add your email address or hit "enter" to add it later.\n', default="")
         if p_email:
             while ("@" and "." not in p_email) or (p_email == True):
-                p_email = click.prompt('\nInvalid email format. Please input a valid email address or press "enter" to skip.')
+                p_email = click.prompt('\nInvalid email format. Please input a valid email address or press "enter" to skip.\n')
 
         p_region = click.prompt(f'\nPlease add your region as either "US", "EU", "JP" or hit "enter" to add it later. \n', default="")
         if p_region:
             while (p_region not in region) or (p_region == True):
-                p_region = click.prompt('\nInvalid region. Please input "US", "EU", "JP" or press "enter" to skip.')
+                p_region = click.prompt('\nInvalid region. Please input "US", "EU", "JP" or press "enter" to skip.\n')
 
         p_password = click.prompt(f'\nPlease enter a password', hide_input=True)
-        c_password = click.prompt(f'\nPlease confirm password', hide_input=True)
+        c_password = click.prompt(f'Please confirm password', hide_input=True)
 
         p_match = True if c_password == p_password else False
 
@@ -90,7 +90,7 @@ def register(ctx, uname):
 
         new_user = User(username=p_user, email=p_email, region=p_region, password=p_password)
 
-        confirm = click.prompt(f'\nIs this information correct?\nUsername: \n{p_user}, Email: {p_email}, Region: {p_region}\n\nType "confirm" if it is correct to submit registration. Type "no" to input information again.\n')
+        confirm = click.prompt(f'\nIs this information correct?\n\nUsername: {p_user}, Email: {p_email}, Region: {p_region}\n\nType "confirm" if it is correct to submit registration. Type "no" to input information again.\n')
 
         if confirm.lower() == "confirm":
             session.add(new_user)
@@ -167,7 +167,7 @@ click.option('--user')
 @click.pass_context
 def main(ctx, user):
     
-    choice = click.prompt('\nWhat would you like to do? \n Type "games" to view your library. \n Type "search" if you want to search your library. \n Type "info" if you want to view your info. \n Type "exit" to exit the application\n')
+    choice = click.prompt('\nWhat would you like to do? \n Type "games" to view your library. \n Type "search" if you want to search your library. \n Type "info" if you want to view or edit your info. \n Type "exit" to exit the application\n')
 
     if choice.lower() == "games":
         click.echo(f"\n {[user.games]} \n")
@@ -215,7 +215,7 @@ def login(ctx, uname):
     else:
         reg_prompt = click.prompt(f"\n{uname} is not in the list of registered usernames. Would you like to register now? y/n?")
 
-        if reg_prompt.lower() == "y":
+        if reg_prompt.lower() == "y" or reg_prompt.lower() == "yes":
             ctx.invoke(register, uname=uname)
         else:
             login() 
