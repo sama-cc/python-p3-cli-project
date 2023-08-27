@@ -24,7 +24,7 @@ def search(ctx, user):
         
         if result:
             for game in result:
-                click.echo(f"\n{game}\n")
+                click.echo(f"\n{game}")
             ctx.invoke(search, user=user)
         else:
             click.echo("\nNo match found.")
@@ -35,7 +35,7 @@ def search(ctx, user):
 
         if result:
             for game in result:
-                click.echo(f"\n{game}\n")
+                click.echo(f"\n{game}")
             ctx.invoke(search, user=user)
         else:
             click.echo("\nNo match found.")
@@ -46,7 +46,7 @@ def search(ctx, user):
 
         if result:
             for game in result:
-                click.echo(f"\n{game}\n")
+                click.echo(f"\n{game}")
             ctx.invoke(search, user=user)
         else:
             click.echo("\nNo match found.")
@@ -57,7 +57,7 @@ def search(ctx, user):
 
         if result:
             for game in result:
-                click.echo(f"\n{game}\n")
+                click.echo(f"\n{game}")
             ctx.invoke(search, user=user)
         else:
             click.echo("\nNo match found.")
