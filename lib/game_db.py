@@ -16,55 +16,52 @@ cli.command()
 click.option('--user')
 @click.pass_context
 def search(ctx, user):
-    choice = click.prompt('\nHow would you like to search? \n Type "title" to search by title. \n Type "platform" to search by platform. \n Type "genre" to search by genre. \n Type "price" to search by price. \n Type "back" if you want to return to the previous menu. \n Type "exit" to exit the application.\n')
+    choice = click.prompt('\nHow would you like to search? \n Type "title" to search by title. \n Type "platform" to search by platform. \n Type "genre" to search by genre. \n Type "price" to search by price. \n Type "back" if you want to return to the previous menu.')
 
     if choice == "title":
-        qtitle = click.prompt("Query")
+        qtitle = click.prompt("\nPlease input the title keyword.\nQuery")
         result = [game for game in user.games if qtitle in game.title]
         
         if result:
             click.echo(f"\n {result}")
             ctx.invoke(search, user=user)
         else:
-            click.echo("No match found.")
+            click.echo("\nNo match found.")
             ctx.invoke(search, user=user)
     elif choice == "platform":
-        qplat = click.prompt("Please choose from the following platforms: \n PC, Switch, Xbox, Playstation. \nQuery")
+        qplat = click.prompt("\nPlease choose from the following platforms: \n PC, Switch, Xbox, Playstation. \nQuery")
         result = [game for game in user.games if qplat in game.platform]
 
         if result:
             click.echo(f" {result}")
             ctx.invoke(search, user=user)
         else:
-            click.echo("No match found.")
+            click.echo("\nNo match found.")
             ctx.invoke(search, user=user)  
     elif choice == "genre":
-        qgenre = click.prompt("Please choose from the following genres: \n FPS, RPG, Adventure, Strategy, MOBA. \nQuery")
+        qgenre = click.prompt("\nPlease choose from the following genres: \n FPS, RPG, Adventure, Strategy, MOBA. \nQuery")
         result = [game for game in user.games if qgenre in game.genre]
 
         if result:
             click.echo(f"{result}")
             ctx.invoke(search, user=user)
         else:
-            click.echo("No match found.")
+            click.echo("\nNo match found.")
             ctx.invoke(search, user=user)
     elif choice == "price":
-        qprice = click.prompt("Please input price as an integer. \nQuery")
+        qprice = click.prompt("\nPlease input price as an integer. \nQuery")
         result = [game for game in user.games if int(qprice) == game.price]
 
         if result:
             click.echo(f"{result}")
             ctx.invoke(search, user=user)
         else:
-            click.echo("No match found.")
+            click.echo("\nNo match found.")
             ctx.invoke(search, user=user)
     elif choice == "back" or "..":
         ctx.invoke(main, user=user)
-    elif choice == "exit":
-        click.echo("\n See you next time. \n")
-        exit()
     else:
-        click.echo("Input is not a valid option. Try 'help' for more options.")
+        click.echo("\nInput is not a valid option. Please try again.")
         ctx.invoke(main, user=user)
 
 cli.command()
@@ -86,7 +83,7 @@ def main(ctx, user):
         click.echo("\n See you next time. \n")
         exit()
     else:
-        click.echo("Input is not a valid option. Try 'help' for more options.")
+        click.echo("Input is not a valid option. Please try again")
         ctx.invoke(main, user=user)
     
 
@@ -101,10 +98,10 @@ def login(ctx, uname, password):
     user = session.query(User).filter(User.username == uname).first()
     if user:
         if user.password == password:
-            click.echo(f'Welcome {uname}. Loading your Game DB...')
+            click.echo(f'\nWelcome {uname}. Loading your Game DB...')
             ctx.invoke(main, user=user)        
     else:
-        click.echo(f"Apologies. {uname} is not in the list of registered usernames. Would you like to register now?")
+        click.echo(f"\nApologies. {uname} is not in the list of registered usernames. Would you like to register now?")
 
 
 if __name__ == '__main__':
