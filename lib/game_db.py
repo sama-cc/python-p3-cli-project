@@ -17,18 +17,18 @@ click.option('--uname')
 @click.pass_context
 def register(ctx, uname):
     set_uname = click.prompt(f'\nWould you like to register as {uname}? y/n? Type "cancel" to cancel')
-    if set_uname.lower() == "y" or "yes":
+    if set_uname == "y" or "yes":
         p_email = click.prompt(f'\nPlease add your email address or hit "enter" to add it later.\n')
         p_region = click.prompt(f'\nPlease add your region or hit "enter" to add it later. \n')
-        p_password = click.prompt(f'\nPlease enter a password')
-        c_password = click.prompt(f'\nPlease confirm password')
+        p_password = click.prompt(f'\nPlease enter a password', hide_input=True)
+        c_password = click.prompt(f'\nPlease confirm password', hide_input=True)
 
         p_match = True if c_password == p_password else False
 
         while not p_match:
             click.echo("\nPasswords did not match. Please try again.")
-            p_password = click.prompt(f'\nPlease enter a password')
-            c_password = click.prompt(f'\nPlease confirm password')
+            p_password = click.prompt(f'\nPlease enter a password', hide_input=True)
+            c_password = click.prompt(f'\nPlease confirm password', hide_input=True)
             p_match = True if c_password == p_password else False        
 
         new_user = User(username=uname, email=p_email, region=p_region, password=p_password)
@@ -44,9 +44,9 @@ def register(ctx, uname):
         else:
             ctx.invoke(register, uname=uname)        
 
-    elif set_uname.lower == "cancel":
+    elif set_uname == "cancel":
         click.invoke(login)
-    elif set_uname.lower() == "n" or "no":
+    elif set_uname() == "n" or "no":
         p_user = click.prompt(f'\nPlease type your desired username.\n')
         e_user = session.query(User).filter(User.username == p_user).first()
 
@@ -58,15 +58,15 @@ def register(ctx, uname):
 
         p_email = click.prompt(f'\nPlease add your email address or hit "enter" to add it later.\n')
         p_region = click.prompt(f'\nPlease add your region or hit "enter" to add it later. \n')
-        p_password = click.prompt(f'\nPlease enter a password')
-        c_password = click.prompt(f'\nPlease confirm password')
+        p_password = click.prompt(f'\nPlease enter a password', hide_input=True)
+        c_password = click.prompt(f'\nPlease confirm password', hide_input=True)
 
         p_match = True if c_password == p_password else False
 
         while not p_match:
             click.echo("\nPasswords did not match. Please try again.")
-            p_password = click.prompt(f'\nPlease enter a password')
-            c_password = click.prompt(f'\nPlease confirm password')
+            p_password = click.prompt(f'\nPlease enter a password', hide_input=True)
+            c_password = click.prompt(f'\nPlease confirm password', hide_input=True)
 
         new_user = User(username=p_user, email=p_email, region=p_region, password=p_password)
 
@@ -169,22 +169,36 @@ def main(ctx, user):
 @cli.command()
 @click.option('--uname', prompt='Welcome to Game DB. Please input your username',
               help='Input the username tied to your account')
-@click.password_option()
 @click.pass_context
-def login(ctx, uname, password):
+def login(ctx, uname):
     """Login prompt"""
     user = session.query(User).filter(User.username == uname).first()
     if user:
-        if user.password == password:
+        p_password = click.prompt(f'Password', hide_input=True)
+        c_password = click.prompt(f'Confirm password', hide_input=True)
+
+        p_match = True if c_password == p_password else False
+
+        while not p_match:
+            click.echo("\nPasswords did not match. Please try again.")
+            p_password = click.prompt(f'Password', hide_input=True)
+            c_password = click.prompt(f'Confirm password', hide_input=True)
+            p_match = True if c_password == p_password else False
+
+        if p_password == user.password:
+
             click.echo(f'\nWelcome {uname}. Loading your Game DB...')
             ctx.invoke(main, user=user)        
+        else:
+            click.echo('\nPassword did not match the record. Try again')
+            ctx.forward(login)
     else:
         reg_prompt = click.prompt(f"\n{uname} is not in the list of registered usernames. Would you like to register now? y/n?")
 
-        if reg_prompt.lower() == "y" or "yes":
+        if reg_prompt == "y":
             ctx.invoke(register, uname=uname)
-        else:
-            ctx.invoke(login) 
+        elif reg_prompt == "n":
+            ctx.forward(login) 
 
 
 
