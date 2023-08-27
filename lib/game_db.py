@@ -16,14 +16,15 @@ cli.command()
 click.option('--user')
 @click.pass_context
 def search(ctx, user):
-    choice = click.prompt('\nHow would you like to search? \n Type "title" to search by title. \n Type "platform" to search by platform. \n Type "genre" to search by genre. \n Type "price" to search by price. \n Type "back" if you want to return to the previous menu.')
+    choice = click.prompt('\nHow would you like to search? \n Type "title" to search by title. \n Type "platform" to search by platform. \n Type "genre" to search by genre. \n Type "price" to search by price. \n Type "back" to return to the previous menu. \n')
 
     if choice == "title":
         qtitle = click.prompt("\nPlease input the title keyword.\nQuery")
         result = [game for game in user.games if qtitle in game.title]
         
         if result:
-            click.echo(f"\n {result}")
+            for game in result:
+                click.echo(f"\n{game}\n")
             ctx.invoke(search, user=user)
         else:
             click.echo("\nNo match found.")
@@ -33,7 +34,8 @@ def search(ctx, user):
         result = [game for game in user.games if qplat in game.platform]
 
         if result:
-            click.echo(f" {result}")
+            for game in result:
+                click.echo(f"\n{game}\n")
             ctx.invoke(search, user=user)
         else:
             click.echo("\nNo match found.")
@@ -43,7 +45,8 @@ def search(ctx, user):
         result = [game for game in user.games if qgenre in game.genre]
 
         if result:
-            click.echo(f"{result}")
+            for game in result:
+                click.echo(f"\n{game}\n")
             ctx.invoke(search, user=user)
         else:
             click.echo("\nNo match found.")
@@ -53,7 +56,8 @@ def search(ctx, user):
         result = [game for game in user.games if int(qprice) == game.price]
 
         if result:
-            click.echo(f"{result}")
+            for game in result:
+                click.echo(f"\n{game}\n")
             ctx.invoke(search, user=user)
         else:
             click.echo("\nNo match found.")
