@@ -20,7 +20,7 @@ cli=click.Group()
 @click.option('--user')
 @click.pass_context
 def account(ctx, user):
-    change = click.prompt(f'\nBelow is your account info.\n\n{user}\n\n Type "back" to go back to the previous menu.\n Type "username" to change username.\n Type "email" to change email address.\n Type "region" to change region.\n')
+    change = click.prompt(f'\nYour account info:\n\n{user}\n\n Type "username" to change username.\n Type "email" to change email address.\n Type "region" to change region.\n Type "back" to go back to the previous menu.\n')
 
     if change.lower() == "username":
         p_user = click.prompt(f'\nPlease type your desired username or type "cancel" to cancel change request.\n\nCurrent username: {user.username}\nNew username\n')
@@ -125,17 +125,72 @@ def account(ctx, user):
             click.echo('\nReturning to Account Menu.')
             ctx.invoke(account, user=user)
     elif change.lower() == "region":
-        pass
+        p_region = click.prompt(f'\nType new region or type "cancel" to cancel change request. Accepted regions are "US", "EU, "JP". \n\nCurrent region: {user.region}\nNew region')
+
+        if p_region.lower == "cancel":
+            click.echo('\nReturning to Account Menu.')
+            ctx.invoke(account, user=user)  
+        elif p_region:
+            while (p_region not in region) or (p_region == True):
+                p_region = click.prompt('\nInvalid region. Accepted regions are "US", "EU, "JP" or press "enter" to skip.\nNew region')
+
+            confirm = click.prompt(f'\nChange region to {p_region}? y/n?\n')
+            if confirm.lower() == "y" or confirm.lower() == "yes":
+                p_password = click.prompt(f'\nPassword', hide_input=True)
+                c_password = click.prompt(f'Confirm password', hide_input=True)
+
+                p_match = True if c_password == p_password else False
+
+                while not p_match:
+                    click.echo("\nPasswords did not match. Please try again.")
+                    p_password = click.prompt(f'\nPassword', hide_input=True)
+                    c_password = click.prompt(f'Confirm password', hide_input=True)
+                    p_match = True if c_password == p_password else False
+
+                if p_password == user.password:
+
+                    user.region = p_region
+                    session.commit()
+
+                    click.echo("\nChange Successful.")
+                    ctx.invoke(account, user=user)
+
+                else:
+                    click.echo('\nPassword did not match the record. Try again')
+                    ctx.forward(account)
+
+            else: 
+                click.echo('\nReturning to Account Menu.')
+                ctx.invoke(account, user=user)
+
+        elif not p_email:
+            rm_email = click.prompt('Remove email from account? y/n?')
+
+            if rm_email.lower() == "y" or rm_email.lower() == "yes":
+                p_password = click.prompt(f'\nPlease enter a password', hide_input=True)
+                c_password = click.prompt(f'Please confirm password', hide_input=True)
+
+                p_match = True if c_password == p_password else False
+
+                while not p_match:
+                    click.echo("\nPasswords did not match. Please try again.")
+                    p_password = click.prompt(f'\nPassword', hide_input=True)
+                    c_password = click.prompt(f'Confirm password', hide_input=True)
+                    p_match = True if c_password == p_password else False
+
+                user.email = ""
+                session.commit()
+            else:
+                click.echo('\nReturning to Account Menu.')
+                ctx.invoke(account, user=user)
+        else:
+            click.echo('\nReturning to Account Menu.')
+            ctx.invoke(account, user=user)
     elif change.lower() == "back":
         ctx.invoke(main, user=user)
     else:
         click.echo("\nInput is invalid.")
-        ctx.invoke(main, user=user)
-
-    
-
-        
-
+        ctx.invoke(account, user=user)
 
 @cli.command()
 @click.option('--uname')
@@ -225,7 +280,6 @@ def register(ctx, uname):
     else:
         click.echo("\nInvalid input. Please try again.")
         ctx.invoke(register, uname=uname)
-
 
 @cli.command()
 @click.option('--user')
