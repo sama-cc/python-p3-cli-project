@@ -13,6 +13,80 @@ import click
 cli=click.Group()
 
 cli.command()
+click.option('--uname')
+@click.pass_context
+def register(ctx, uname):
+    set_uname = click.prompt(f'\nWould you like to register as {uname}? y/n? Type "cancel" to cancel')
+    if set_uname.lower() == "y" or "yes":
+        p_email = click.prompt(f'\nPlease add your email address or hit "enter" to add it later.\n')
+        p_region = click.prompt(f'\nPlease add your region or hit "enter" to add it later. \n')
+        p_password = click.prompt(f'\nPlease enter a password')
+        c_password = click.prompt(f'\nPlease confirm password')
+
+        p_match = True if c_password == p_password else False
+
+        while not p_match:
+            click.echo("\nPasswords did not match. Please try again.")
+            p_password = click.prompt(f'\nPlease enter a password')
+            c_password = click.prompt(f'\nPlease confirm password')
+            p_match = True if c_password == p_password else False        
+
+        new_user = User(username=uname, email=p_email, region=p_region, password=p_password)
+        
+        confirm = click.prompt(f'\nIs this information correct?\nUsername: {uname}, Email: {p_email}, Region: {p_region}\nType "confirm" if it is correct to submit registration. Type "no" to input information again.')
+
+        if confirm == "confirm":
+            session.add(new_user)
+            session.commit()
+
+            click.echo(f'\n{new_user} has been successfully registered. Please log in.')
+            ctx.invoke(login)
+        else:
+            ctx.invoke(register, uname=uname)        
+
+    elif set_uname.lower == "cancel":
+        click.invoke(login)
+    elif set_uname.lower() == "n" or "no":
+        p_user = click.prompt(f'\nPlease type your desired username.\n')
+        e_user = session.query(User).filter(User.username == p_user).first()
+
+        while e_user:
+            click.echo(f"\n{p_user} is already taken. Please try again. ")
+            p_user = click.prompt(f'\nPlease type your desired username.\n')
+            e_user = session.query(User).filter(User.username == p_user).first()
+
+
+        p_email = click.prompt(f'\nPlease add your email address or hit "enter" to add it later.\n')
+        p_region = click.prompt(f'\nPlease add your region or hit "enter" to add it later. \n')
+        p_password = click.prompt(f'\nPlease enter a password')
+        c_password = click.prompt(f'\nPlease confirm password')
+
+        p_match = True if c_password == p_password else False
+
+        while not p_match:
+            click.echo("\nPasswords did not match. Please try again.")
+            p_password = click.prompt(f'\nPlease enter a password')
+            c_password = click.prompt(f'\nPlease confirm password')
+
+        new_user = User(username=p_user, email=p_email, region=p_region, password=p_password)
+
+        confirm = click.prompt(f'\nIs this information correct?\nUsername: {p_user}, Email: {p_email}, Region: {p_region}\nType "confirm" if it is correct to submit registration. Type "no" to input information again.')
+
+        if confirm == "confirm":
+            session.add(new_user)
+            session.commit()
+
+            click.echo(f'\n{new_user} has been successfully registered. Please log in.')
+            ctx.invoke(login)
+        else:
+            ctx.invoke(register, uname=uname) 
+
+    else:
+        click.echo("\nInvalid input. Please try again.")
+        ctx.invoke(register, uname=uname)
+
+
+cli.command()
 click.option('--user')
 @click.pass_context
 def search(ctx, user):
@@ -105,7 +179,13 @@ def login(ctx, uname, password):
             click.echo(f'\nWelcome {uname}. Loading your Game DB...')
             ctx.invoke(main, user=user)        
     else:
-        click.echo(f"\nApologies. {uname} is not in the list of registered usernames. Would you like to register now?")
+        reg_prompt = click.prompt(f"\n{uname} is not in the list of registered usernames. Would you like to register now? y/n?")
+
+        if reg_prompt.lower() == "y" or "yes":
+            ctx.invoke(register, uname=uname)
+        else:
+            ctx.invoke(login) 
+
 
 
 if __name__ == '__main__':
