@@ -1,239 +1,238 @@
-# Phase 3 CLI Project Template
+# Game DB
 
-## Learning Goals
+Game DB is a Command Line Interface(CLI) application that is designed to help you manage your game library using a database. 
 
-- Discuss the basic directory structure of a CLI.
-- Outline the first steps in building a CLI.
+## Description
 
-***
+The DB in Game DB stands for database.  Game DB is an easy-to-use application to manage your game library using the power and effciency of a SQL database without writing any SQL code! With it you can view your games, search for specific games in your library, and add or remove games.
 
-## Introduction
+## Installation
 
-You now have a basic idea of what constitutes a CLI, but you (understandably!)
-likely don't have the best idea of where to start. Fork and clone this lesson
-for a template for your CLI. Take a look at the directory structure before we
-begin:
+Simply download the Game DB folder. Navigate to the lib folder and double click on the game_db.py file. Alternatively you can open your terminal, navigate to the lib folder and run 'python3 game_db.py'.
 
-```console
-.
-├── Pipfile
-├── Pipfile.lock
-├── README.md
-└── lib
-    ├── cli.py
-    ├── db
-    │   ├── models.py
-    │   └── seed.py
-    ├── debug.py
-    └── helpers.py
-```
+## Usage
 
-> **Note: You may already know some or all of the material covered in this
-> lesson. We hope that having it all in one place will help you in designing
-> and developing your project, regardless of where you're starting off.**
+Game DB is straightforward to use. After logging in or registering you will be greeted with the Main Menu. Each menu in Game DB has clear instructions to help you navigate showing exactly what your options are. Other menus that are available that will be detailed further below are:
 
-***
+- Library Menu - View, add or remove games.
 
-## Where Do I Start?
+- Search Menu - Search for games with different filter options.
 
-This project will likely be one of the biggest projects you've undertaken so
-far. Your first task should be creating a Git repository to keep track of your
-work and roll back any undesired changes.
+- Account Menu - View or edit your account information.
 
-### Removing Existing Git Configuration
+### Login
 
-If you're using this template, start off by removing the existing metadata for
-Github and Canvas. Run the following command to carry this out:
-
-```console
-$ rm -rf .git .github .canvas
-```
-
-The `rm` command removes files from your computer's memory. The `-r` flag tells
-the console to remove _recursively_, which allows the command to remove
-directories and the files within them. `-f` removes them permanently.
-
-`.git` contains this directory's configuration to track changes and push to
-Github (you want to track and push _your own_ changes instead), and `.github`
-and `.canvas` contain the metadata to create a Canvas page from your Git repo.
-You don't have the permissions to edit our Canvas course, so it's not worth
-keeping them around.
-
-### Creating Your Own Git Repo
-
-First things first- rename this directory! Once you have an idea for a name,
-move one level up with `cd ..` and run `mv python-p3-cli-project-template
-<new-directory-name>` to change its name.
-
-> **Note: `mv` actually stands for "move", but your computer interprets this
-> rename as a move from a directory with the old name to a directory with
-> a new name.**
-
-`cd` back into your new directory and run `git init` to create a local git
-repository. Add all of your local files to version control with `git add --all`,
-then commit them with `git commit -m'initial commit'`. (You can change the
-message here- this one is just a common choice.)
-
-Navigate to [GitHub](https://github.com). In the upper-right corner of the page,
-click on the "+" dropdown menu, then select "New repository". Enter the name of
-your local repo, choose whether you would like it to be public or private, make
-sure "Initialize this repository with a README" is unchecked (you already have
-one), then click "Create repository".
-
-Head back to the command line and enter `git remote add <project name> <github
-url>`. This will map the remote repository to your local repository. Finally,
-push your first commit with `git push -u origin main`.
-
-Your project is now version-controlled locally and online. This will allow you
-to create different versions of your project and pick up your work on a
-different machine if the need arises.
-
-***
-
-## Generating Your Pipenv
-
-You might have noticed in the file structure- there's already a Pipfile! That
-being said, we haven't put much in there- just Python version 3.8 and ipdb.
-
-Install any dependencies you know you'll need for your project, like SQLAlchemy
-and Alembic, before you begin. You can do this straight from the command line:
-
-```console
-$ pipenv install sqlalchemy alembic
-```
-
-From here, you should run your second commit:
-
-```console
-$ git add Pipfile Pipfile.lock
-$ git commit -m'add sqlalchemy and alembic to pipenv'
-$ git push
-```
-
-Now that your environment is set up, run `pipenv shell` to enter it.
-
-***
-
-## Generating Your Database
-
-Once you're in your environment, you can start development wherever you'd like.
-We think it's easiest to start with setting up your database.
-
-`cd` into the `lib/db` directory, then run `alembic init migrations` to set up
-Alembic. Modify line 58 in `alembic.ini` to point to the database you intend to
-create, then replace line 21 in `migrations/env.py` with the following:
-
-```py
-from models import Base
-target_metadata = Base.metadata
-```
-
-We haven't created our `Base` or any models just yet, but we know where they're
-going to be. Navigate to `models.py` and start creating those models. Remember
-to regularly run `alembic revision --autogenerate -m'<descriptive message>'` and
-`alembic upgrade head` to track your modifications to the database and create
-checkpoints in case you ever need to roll those modifications back.
-
-If you want to seed your database, now would be a great time to write out your
-`seed.py` script and run it to generate some test data. You may want to use
-Pipenv to install Faker to save you some time.
-
-***
-
-## Generating Your CLI
-
-A CLI is, simply put, an interactive script. You can run it with `python cli.py`
-or include the shebang and make it executable with `chmod +x`. It will ask for
-input, do some work, and accomplish some sort of task by the end.
-
-Past that, CLIs can be whatever you'd like. An inventory navigator? A checkout
-station for a restaurant? A choose-your-adventure video game? Absolutely!
-
-Here's what all of these things have in common (if done well): a number of
-`import` statements (usually _a lot_ of import statements), an `if __name__ ==
-"__main__"` block, and a number of function calls inside of that block. These
-functions should be kept in other modules (ideally not _just_ `helpers.py`)
-
-There will likely be some `print()` statements in your CLI script to let the
-user know what's going on, but most of these can be placed in functions in
-other modules that are grouped with others that carry out similar tasks. You'll
-see some variable definitions, object initializations, and control flow
-operators (especially `if/else` blocks and `while` loops) as well. When your
-project is done, your `cli.py` file might look like this:
-
-```py
-from helpers import (
-    function_1, function_2,
-    function_3, function_4,
-    function_5, function_6,
-    function_7, function_8,
-    function_9, function_10
-)
-
-if __name__ == '__main__':
-    print('Welcome to my CLI!')
-    function_1()
-    x = 0
-    while not x:
-        x = function_2(x)
-    if x < 0:
-        y = function_3(x)
-    else:
-        y = function_4(x)
-    z = function_5(y)
-    z = function_6(z)
-    z = function_7(z)
-    z = function_8(z)
-    function_9(z)
-    function_10(x, y, z)
-    print('Thanks for using my CLI')
+Below is what the login prompt looks like when you first run Game DB. If you are already registered you simply type your username and password.
 
 ```
+Welcome to Game DB. Please input your username.
 
-***
+Username:
 
-## Updating Your README.md
+Password:
+Confirm password:
+```
+### Register
 
-`README.md` is a Markdown file that describes your project. These files can be
-used in many different ways- you may have noticed that we use them to generate
-entire Canvas lessons- but they're most commonly used as homepages for online
-Git repositories. **When you develop something that you want other people to
-use, you need to have a README.**
+If you are not registered typing your desired username will start the registration process.
 
-Markdown is not a language that we cover in Flatiron's Software Engineering
-curriculum, but it's not a particularly difficult language to learn (if you've
-ever left a comment on Reddit, you might already know the basics). Refer to the
-cheat sheet in this lesson's resources for a basic guide to Markdown.
+```
+Username: user_example
 
-### What Goes into a README?
+user_example is not in the list of registered usernames. Would you like to register now? y/n?:
+```
 
-This README should serve as a template for your own- go through the important
-files in your project and describe what they do. Each file that you edit
-(you can ignore your Alembic files) should get at least a paragraph. Each
-function should get a small blurb.
+If you do not want to use the username you initially typed you can instead type a different username. If the username is available you will then be prompted for additional account information.
 
-You should descibe your actual CLI script first, and with a good level of
-detail. The rest should be ordered by importance to the user. (Probably
-functions next, then models.)
+```
+Would you like to register as user_example? y/n? Type "cancel" to cancel:
+```
 
-Screenshots and links to resources that you used throughout are also useful to
-users and collaborators, but a little more syntactically complicated. Only add
-these in if you're feeling comfortable with Markdown.
+You will be prompted for your email address and your region. You can click "enter" to skip to the next prompt. Below is an example.
 
-***
+```
+Please add your email address or hit "enter" to add it later.
+```
 
-## Conclusion
+When you have gone through all of the registration prompts you will be asked to verify the information.
 
-A lot of work goes into a good CLI, but it all relies on concepts that you've
-practiced quite a bit by now. Hopefully this template and guide will get you
-off to a good start with your Phase 3 Project.
+```
+Is this information correct?
 
-Happy coding!
+Username: user_example, Email: example@example.com, Region: US
 
-***
+Type "confirm" if it is correct to submit registration. Type "no" to input information again.
+```
 
-## Resources
+If registration was successful you will be greeted with the following message and will be prompted to log in with your password.
 
-- [Setting up a respository - Atlassian](https://www.atlassian.com/git/tutorials/setting-up-a-repository)
-- [Create a repo- GitHub Docs](https://docs.github.com/en/get-started/quickstart/create-a-repo)
-- [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
+```
+Username: "user_example", Email: "example@example.com", Region: "US", Joined: "2023-08-28 01:56:56" has been successfully registered. Please log in.
+Password:
+```
+
+### Main Menu
+
+Upon successful log in you will be greeted with the Main Menu at which you can navigate to the various sub-menus.
+
+```
+Welcome user_example. Loading your Game DB...
+
+MAIN MENU:
+
+What would you like to do?
+ Type "games" to view your library.
+ Type "search" to search your library.
+ Type "info" to view or edit your account info.
+ Type "exit" to exit the application.
+```
+### Library Menu
+
+The Library Menu is where you go to do anything concerning your game library. There are many easy-to-understand options as shown below. 
+
+```
+LIBRARY MENU
+
+What would you like to do with your game library?
+ Type "all" to view all games in your library.
+ Type "search" to search for a game in your library.
+ Type "add" to add a game to your library.
+ Type "remove" to remove a game from your library.
+ Type "back" to return to the Main menu.
+```
+### Search Menu
+
+As the name implies you can search through your game library at the Search Menu using different filter options listed below.
+
+```
+SEARCH MENU:
+
+How would you like to search?
+ Type "title" to search by title.
+ Type "platform" to search by platform.
+ Type "genre" to search by genre.
+ Type "price" to search by price.
+ Type "back" to return to the Main menu.
+```
+### Account Menu
+
+The Account Menu is where you go to view your user information. You can make changes to your account if through the options listed below.
+
+```
+ACCOUNT MENU
+
+Your account info:
+
+Username: "user_example", Email: "example@example.com", Region: "US", Joined: "2023-08-28 01:56:56"
+
+ Type "username" to change username.
+ Type "email" to change email address.
+ Type "region" to change region.
+ Type "back" to go back to the previous menu.
+```
+## Debug
+
+Administrative-like features can currently only be accessed through running 'debug.py'
+
+There are two classes available. User and Game.
+
+### Available User Methods:
+
+#### Instance
+
+- games_by_title() - Search a users games by title. Must provide string.
+    
+
+- games_by_price() - Search a users games by price. Must provide integer.
+    
+
+- games_by_platform() - Search a users games by platform. Must provide string.
+    
+
+- games_by_genre() - Search a users games by genre. Must provide string.
+
+
+#### Class
+
+- find_user() - Search for a user in the User table of the database. Must provide username string.  
+
+
+- by_email() - Search for a user in the User table of the database by email. Must provide string.
+
+
+- by_region() - Search for a user in the User table of the database by region. Must provide string US, EU, or JP.
+
+
+- get_all() - Returns all users.
+    
+
+- print_all() - prints all users.
+
+
+### Available Game Methods:
+
+#### Instance
+
+- users_by_username() - Returns all usernames for users that own the game. Must provide username string.
+    
+
+- users_by_region() - Returns all regions for users that own the game. Must provide string US, EU, or JP.
+
+
+#### Class
+
+- find_title() - Search for a game in the Game table of the database by game title. Must provide string.  
+
+
+- by_price() - Search for a game in the Game table of the database by game price. Must provide integer.
+
+- by_platform() - Search for a game in the Game table of the database by game platform. Must provide string PC, Xbox, Switch, Playstation.
+
+
+- by_genre() - Search for a game in the Game table of the database by game genre. Must provide string FPS, RPG, Adventure, Strategy, MOBA.
+
+
+- get_all() - Returns all games.
+    
+
+- print_all() - prints all games.
+
+## Video Walkthrough
+
+Follow the link below for a video walkthrough.
+
+## FAQ
+
+- Q. I noticed information that is innacurate. Can you please fix it?
+
+    A. Please contact me using the email listed in the Support section.
+
+- Q. I am experiencing a bug. Can I get help?
+
+    A. Please contact me using the email listed in the Support section.
+
+## Roadmap
+
+- Allow an admin mode to view and manage all users in a database.
+- Allow admin mode to add games to the catalogue.
+
+## Support
+
+If you have any questions regarding how Game DB is used or encounter any issues please feel free to contact me using the contact information below.
+
+Email: sam.camhi@gmail.com
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.
+
+## Credit
+
+Below is a list of materials that I did not create and must give credit:
+
+1. https://click.palletsprojects.com/en/8.1.x/ - Click was used to help create the CLI.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
