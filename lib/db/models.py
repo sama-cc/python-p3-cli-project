@@ -29,13 +29,6 @@ class User(Base):
     updated_at = Column(DateTime(), onupdate=func.now())
     password = Column(String())
 
-    # def __repr__(self):
-    #     return f'User(id={self.id}, ' + \
-    #         f'username="{self.username}", ' + \
-    #         f'email="{self.email}", ' + \
-    #         f'user_since="{self.created_at}", ' + \
-    #         f'region="{self.region}")'
-
     def __repr__(self):
         return f'Username: "{self.username}", ' + \
             f'Email: "{self.email}", ' + \
@@ -103,12 +96,6 @@ class Game(Base):
     users = relationship('User', secondary=owned_game, back_populates='games')
     created_at = Column(DateTime(), server_default=func.now())
     updated_at = Column(DateTime(), onupdate=func.now())    
-
-    # def __repr__(self):
-    #     return f'Game(id={self.id}, ' + \
-    #         f'title="{self.title}", ' + \
-    #         f'platform="{self.platform}", ' + \
-    #         f'price="{self.price}")'    
 
     def __repr__(self):
         return f'ID: "{self.id}", ' + \
