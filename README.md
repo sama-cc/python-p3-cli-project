@@ -8,7 +8,7 @@ The DB in Game DB stands for database.  Game DB is an easy-to-use application to
 
 ## Installation
 
-Simply download the Game DB folder. Navigate to the lib folder and double click on the game_db.py file. Alternatively you can open your terminal, navigate to the lib folder and run 'python3 game_db.py'.
+Simply download the Game DB folder. Navigate to the lib folder in the terminal. Run 'pipenv install && pipenv shell' and run 'python3 game_db.py'.
 
 ## Usage
 
@@ -200,6 +200,8 @@ There are two classes available. User and Game.
 ## Video Walkthrough
 
 Follow the link below for a video walkthrough.
+
+[Game DB - Youtube](https://youtu.be/-_9jkpS0Mpg)
 
 ## FAQ
 
