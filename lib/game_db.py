@@ -18,6 +18,62 @@ cli=click.Group()
 
 @cli.command()
 @click.option('--user')
+@click.option('--choice')
+@click.pass_context
+def library(ctx, user, choice):
+    
+    if choice == None:
+        choice = click.prompt(f'\nWhat would you like to do with your game library?\n Type "all" to view all games in your library.\n Type "search" to search for a game in your library.\n Type "add" to add a game to your library.\n Type "remove" to remove a game from your library.\n Type "back" to return to the Main menu.\n')
+
+    if choice.lower() == "all":
+        click.echo("\nBelow is a full list of your owned games:")
+        for game in user.games:
+            click.echo(f"\n{game}")
+        ctx.invoke(library, user=user)
+    elif choice.lower() == "search":
+        ctx.invoke(search, user=user) 
+    elif choice.lower() == "add":
+        id_prompt = click.prompt('\nInput the ID of the game you wish to add to your library.\n Type "search" if you would like to search for a game ID.\n Type "all" if you would like to view the full library of games.\n Type "back" to go to the previous menu.\n')
+
+        if id_prompt.lower() == "search":
+            ctx.invoke(search, user=user)
+        elif id_prompt.lower() == "all":
+            click.echo("Below is a complete list of the game catalogue:")
+            cat = session.query(Game).all()
+            for game in cat:
+                click.echo(f'\n{game}')
+            ctx.invoke(library, user=user, choice=choice)
+        elif id_prompt.lower() == "back":
+            ctx.invoke(main, user=user)
+        else:
+            try:                
+                id = int(id_prompt)
+                if id:
+                    if id in [game.id for game in session.query(Game).all()]:
+                        game = session.query(Game).filter(Game.id == id).first()
+                        p_add = click.prompt(f'\nAdd the following game to your library? y/n?\n\n{game}\n\n')
+                        if p_add.lower() == "y" or p_add.lower() == "yes":
+                            game.users.append(session.query(User).filter(User.id==user.id).first())
+                            session.commit()
+                            click.echo(f'\n{game.title} successfully added to your library.\n\nReturning to Library Menu.')
+                            ctx.invoke(library, user=user)
+                        else:
+                            ctx.invoke(library, user=user, choice=choice)
+                    else:
+                        click.echo('\nInput does not match a game id in the catalogue.\nPlease Try again.\n')
+                        ctx.invoke(library, user=user, choice=choice)
+            except ValueError:
+                click.echo('\nInput is invalid. Please Try again.')          
+                ctx.invoke(library, user=user, choice=choice)   
+                
+    elif choice.lower() == "remove":
+        pass 
+    elif choice.lower() == "back":
+        ctx.invoke(main, user=user) 
+
+
+@cli.command()
+@click.option('--user')
 @click.pass_context
 def account(ctx, user):
     change = click.prompt(f'\nYour account info:\n\n{user}\n\n Type "username" to change username.\n Type "email" to change email address.\n Type "region" to change region.\n Type "back" to go back to the previous menu.\n')
@@ -285,7 +341,7 @@ def register(ctx, uname):
 @click.option('--user')
 @click.pass_context
 def search(ctx, user):
-    choice = click.prompt('\nHow would you like to search? \n Type "title" to search by title. \n Type "platform" to search by platform. \n Type "genre" to search by genre. \n Type "price" to search by price. \n Type "back" to return to the previous menu. \n')
+    choice = click.prompt('\nHow would you like to search? \n Type "title" to search by title. \n Type "platform" to search by platform. \n Type "genre" to search by genre. \n Type "price" to search by price. \n Type "back" to return to the Main menu. \n')
 
     if choice.lower() == "title":
         qtitle = click.prompt("\nPlease input the title keyword.\nQuery")
@@ -343,13 +399,10 @@ def search(ctx, user):
 def main(ctx, user):
     """Main Menu"""
 
-    choice = click.prompt('\nWhat would you like to do? \n Type "games" to view your library. \n Type "search" to search your library. \n Type "info" to view or edit your account info. \n Type "exit" to exit the application.\n')
+    choice = click.prompt('\nMAIN MENU:\n\nWhat would you like to do? \n Type "games" to view your library. \n Type "search" to search your library. \n Type "info" to view or edit your account info. \n Type "exit" to exit the application.\n')
 
     if choice.lower() == "games":
-        click.echo("\nBelow is a full list of your owned games.")
-        for game in user.games:
-            click.echo(f"\n{game}")
-        ctx.invoke(main, user=user)
+        ctx.invoke(library, user=user)
     elif choice.lower() == "info":
         ctx.invoke(account, user=user)              
     elif choice.lower() == "search":

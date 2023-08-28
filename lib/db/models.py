@@ -111,7 +111,8 @@ class Game(Base):
     #         f'price="{self.price}")'    
 
     def __repr__(self):
-        return f'Title: "{self.title}", ' + \
+        return f'ID: "{self.id}", ' + \
+            f'Title: "{self.title}", ' + \
             f'Genre: "{self.genre}", ' + \
             f'Platform: "{self.platform}", ' + \
             f'Price: "{self.price}"'
